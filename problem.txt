@@ -1,0 +1,12 @@
+Problem Statement 
+
+Part A: Write a program that lets two players play tic-tac-toe with each other. 
+
+Board: The program starts with the empty grid. 
+Players: Player one chooses the symbol (options: X and O) she likes to play with. Player two is automatically assigned the other symbol. 
+Turn: A player’s turn is completed when she chooses the right slot on the grid. On an invalid input, ask the user to re-enter the correct slot. 
+The game ends when there is no more move to make or a player has scored a sequence (3 slots in a row, column or a diagonal). 
+Consider this as version v1.0 for your program. 
+
+Part B: Modify the program that allows players to play against a computer. 
+The Player will always go first and the computer will play second. 
