@@ -25,7 +25,7 @@ class TicTacToe:
     def _validate_move(self, sub_arr, sub_item):
         if self.board[sub_arr][sub_item] != "-":
             return False
-        
+
         return True
 
     def _figure_item(self, index):
@@ -38,7 +38,7 @@ class TicTacToe:
         else:
             sub_arr = 2
             sub_item = index - 7
-        
+
         return sub_arr, sub_item
 
     def get_result(self):
@@ -63,6 +63,6 @@ class TicTacToe:
 
         if "-" not in self.board[0] and "-" not in self.board[1] and "-" not in self.board[2]:
             return "E"
-        
+
         return False
 
