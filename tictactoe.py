@@ -14,13 +14,16 @@ class TicTacToe:
 
         self.board[sub_arr][sub_item] = player_symbol
 
-        print(";;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; BOARD ;;;;;;;;;;")
-        print(f";;;;;;;;;;;;{self.board[0]};;;;;;;;;;;;;;")
-        print(f";;;;;;;;;;;;{self.board[1]};;;;;;;;;;;;;;")
-        print(f";;;;;;;;;;;;{self.board[2]};;;;;;;;;;;;;;")
-        print(";;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; BOARD ;;;;;;;;;;\n")
+        self._print_board()
 
         return True
+
+    def _print_board(self):
+        print(";;;;;;;;;;;; BOARD ;;;;;;;;;;;;;;;;;")
+        for sub_list in self.board:
+            print(f";;;;;;;;;;;;{sub_list};;;;;;;;;;;;;;")
+        print(";;;;;;;;;;;; BOARD ;;;;;;;;;;;;;;;;;\n")
+
 
     def _validate_move(self, sub_arr, sub_item):
         if self.board[sub_arr][sub_item] != "-":
@@ -42,27 +45,65 @@ class TicTacToe:
         return sub_arr, sub_item
 
     def get_result(self):
-        if len(set([self.board[0][0], self.board[1][0], self.board[2][0]])) == 1 and "-" not in set([self.board[0][0], self.board[1][0], self.board[2][0]]):
-            return "W"
-        elif len(set([self.board[0][1], self.board[1][1], self.board[2][1]])) == 1 and "-" not in set([self.board[0][1], self.board[1][1], self.board[2][1]]):
-            return "W"
-        elif len(set([self.board[0][2], self.board[1][2], self.board[2][2]])) == 1 and "-" not in set([self.board[0][2], self.board[1][2], self.board[2][2]]):
-            return "W"
+        """
+        In the below logic, we are initially transforming the items of board into numbers. 
+        If entry is 'X' then we mark it as '1', If entry is 'O' then we mark it as '2'.
+        If entry is '-' then we mark it as 'len(sub_list) + 2', so that this value will always be
+        greater than the success criteria value.
 
-        if "-" not in self.board[0] and len(set(self.board[0])) == 1:
-            return "W"
-        elif "-" not in self.board[1] and len(set(self.board[1])) == 1:
-            return "W"
-        elif "-" not in self.board[2] and len(set(self.board[2])) == 1:
-            return "W"
+        While transforming we are calculating the horizontal conditions and also loading the 
+        diagonal data points, so that we dont have to run one more for loop for that.
 
-        if len(set([self.board[0][0], self.board[1][1], self.board[2][2]])) == 1 and "-" not in set([self.board[0][0], self.board[1][1], self.board[2][2]]):
-            return "W"
-        elif len(set([self.board[0][2], self.board[1][1], self.board[2][0]])) == 1 and "-" not in set([self.board[0][2], self.board[1][1], self.board[2][0]]):
-            return "W"
+        Only for vertical calcualtion we have kept a separte for loop, since that needs some nesting
+        """
+        result_board = []
+        is_complete = True
 
-        if "-" not in self.board[0] and "-" not in self.board[1] and "-" not in self.board[2]:
-            return "E"
+        left_right_diag = []
+        right_left_diag = []
+
+        for index, sub_list in enumerate(self.board):
+            # transforming the board
+            new_sub_list = []
+            for sub_item in sub_list:
+                new_sub_item = len(sub_list) + 2
+                if sub_item == 'X':
+                    new_sub_item = 1
+                elif sub_item == 'O':
+                    new_sub_item = 2
+                else:
+                    # updating this flag to know if the board is complete or not
+                    is_complete = False
+                
+                new_sub_list.append(new_sub_item)
+            result_board.append(new_sub_list)
+
+            # calculating horizontal success
+            if sum(new_sub_list) == len(new_sub_list) or sum(new_sub_list) == len(new_sub_list) * 2:
+                return "W"
+            
+            # populating data points for diagonal success
+            left_right_diag.append(new_sub_list[index])
+            right_left_diag.append(new_sub_list[len(new_sub_list) - (index + 1)])
+
+        # calculating the vertical success
+        for index in range(len(result_board)):
+            vertical_entries = []
+            for sub_index in range(len(result_board)):
+                vertical_entries.append(result_board[sub_index][index])
+            
+            if sum(vertical_entries) == len(vertical_entries) or sum(vertical_entries) == len(vertical_entries) * 2:
+                return "W"
+
+        # calculating diagonal success
+        if sum(left_right_diag) == len(left_right_diag) or sum(left_right_diag) == len(left_right_diag) * 2:
+            return "W"
         
-        return False
+        if sum(right_left_diag) == len(right_left_diag) or sum(right_left_diag) == len(right_left_diag) * 2:
+            return "W"
+        
+        # if the board is complete and no success, then 'nobody' wins
+        if is_complete:
+            return "E"
 
+        return False
